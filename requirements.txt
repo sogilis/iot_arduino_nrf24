@@ -1,0 +1,11 @@
+Flask==0.12.2
+Jinja2==2.9.6
+MarkupSafe==1.0
+Werkzeug==0.12.2
+argparse==1.2.1
+click==6.7
+itsdangerous==0.24
+pony==0.7.1
+psycopg2==2.7.1
+recordtype==1.1
+wsgiref==0.1.2
