@@ -31,5 +31,11 @@ def post_sensor_data():
         commit()
     return "OK"
 
+@app.route('/get_sensor_data')
+def get_sensor_data():
+    with db_session:
+        data = select(d for d in SensorData).order_by(SensorData.date)[:]
+    return data
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=os.getenv("PORT"))
