@@ -1,7 +1,7 @@
 from flask import Flask
-from flask import request
+from flask import request, render_template
 from pony.orm import *
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__)
@@ -20,6 +20,12 @@ db.generate_mapping(create_tables=True)
 def hello():
     return "Hello World!"
 
+@app.route("/sensor_list")
+def sensor_list():
+    with db_session:
+        names = select((s.name) for s in SensorData)[:]
+    return render_template('sensor_list.html', sensors=names)
+
 @app.route('/post_sensor_data', methods=['GET'])
 def post_sensor_data():
     received_args = request.args
@@ -31,11 +37,19 @@ def post_sensor_data():
         commit()
     return "OK"
 
-@app.route('/get_sensor_data')
+@app.route('/get_sensor_data', methods=['GET'])
 def get_sensor_data():
     with db_session:
-        data = select(d for d in SensorData).order_by(SensorData.date)[:]
-    return data
+        received_args = request.args
+        db_result = select(d for d in SensorData if (d.date >= datetime.now() - timedelta(days=1)
+                                                     and d.name == received_args['name'])).order_by(SensorData.date)[:]
+        dates = []
+        data = []
+        for line in db_result:
+            dates.append(line.date)
+            data.append(line.data)
+            print line.date, line.data
+    return render_template('graph.html', dates=dates, data=data)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=os.getenv("PORT"))

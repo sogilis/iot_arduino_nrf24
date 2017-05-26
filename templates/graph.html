@@ -1,0 +1,35 @@
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+</head>
+<body>
+   <canvas id="myChart" width="400" height="300"></canvas>
+<script>
+var ctx = document.getElementById("myChart").getContext("2d");
+var data = {{data|tojson}};
+var myLineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels:{{dates|tojson}},
+      datasets:[{
+         label: "Temperature",
+         borderColor: "rgba(75,192,192,1)",
+         fill:false,
+         data:data
+      }]},
+    options: {
+      responsive:false,
+      scales:{
+         xAxes:[{type:'time',
+                 time:{
+                    unitStepSize:data.length / 6,
+                    displayFormats:{
+                       day: 'DD/MM HH:mm',
+                    },
+                    unit :'day'
+                 }}]
+      }
+   }
+});
+</script>
+</body>
