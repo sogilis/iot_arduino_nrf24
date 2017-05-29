@@ -2,9 +2,12 @@ from flask import Flask
 from flask import request, render_template
 from pony.orm import *
 from datetime import datetime, timedelta
+from flask_sse import sse
 import os
 
 app = Flask(__name__)
+app.config["REDIS_URL"] = "redis://localhost"
+app.register_blueprint(sse, url_prefix='/stream')
 db = Database()
 
 class SensorData(db.Entity):
@@ -19,6 +22,12 @@ db.generate_mapping(create_tables=True)
 @app.route("/")
 def hello():
     return "Hello World!"
+
+@app.route('/send_sse')
+def send_message():
+    sse.publish({"message": "Hello!"}, type='greeting')
+    print 'message sent'
+    return "Message sent!"
 
 @app.route("/sensor_list")
 def sensor_list():
@@ -51,5 +60,5 @@ def get_sensor_data():
             print line.date, line.data
     return render_template('graph.html', dates=dates, data=data)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=os.getenv("PORT"))
+#if __name__ == "__main__":
+#    app.run(host="0.0.0.0", port=os.getenv("PORT"))
