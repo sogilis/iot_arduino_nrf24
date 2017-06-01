@@ -4,16 +4,27 @@
 <body>
    <script>
       sensor_list = {{sensors|tojson}};
-      for (s in sensor_list) {
-         name = sensor_list[s]
+      types_list = {{types_list|tojson}};
+      for (t in types_list){
+         name_room = t;
          var a = document.createElement('a');
-         var linkText = document.createTextNode(name);
+         var linkText = document.createTextNode(name_room);
          a.appendChild(linkText);
-         a.title = name;
-         a.href = "/get_sensor_data?name=" + name;
+         a.title = name_room;
          document.body.appendChild(a);
-         var br = document.createElement('br');
-         document.body.appendChild(br);
+         var ul = document.createElement('ul');
+         document.body.appendChild(ul);
+         for (i in types_list[t]){
+            name = types_list[t][i];
+            var a = document.createElement('a');
+            var linkText = document.createTextNode(name);
+            a.appendChild(linkText);
+            a.title =  name;
+            a.href = "/get_sensor_data?name=" + name_room + "&type=" + name;
+            var li = document.createElement('li');
+            li.appendChild(a);
+            ul.appendChild(li);
+         }
       }
    </script>
 </body>

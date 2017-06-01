@@ -23,8 +23,13 @@ def hello():
 @app.route("/sensor_list")
 def sensor_list():
     with db_session:
+        types_list = {}
         names = select((s.name) for s in SensorData)[:]
-    return render_template('sensor_list.html', sensors=names)
+        for n in names:
+            k = select(d.dataType for d in SensorData if d.name == n)[:]
+            types_list[n] = k
+        print types_list
+    return render_template('sensor_list.html', sensors=names, types_list=types_list)
 
 @app.route('/post_sensor_data', methods=['GET'])
 def post_sensor_data():
@@ -42,7 +47,8 @@ def get_sensor_data():
     with db_session:
         received_args = request.args
         db_result = select(d for d in SensorData if (d.date >= datetime.now() - timedelta(days=1)
-                                                     and d.name == received_args['name'])).order_by(SensorData.date)[:]
+                                                     and d.name == received_args['name']
+                                                     and d.dataType == received_args['type'])).order_by(SensorData.date)[:]
         dates = []
         data = []
         for line in db_result:
