@@ -23,10 +23,12 @@ db.generate_mapping(create_tables=True)
 def hello():
     return "Hello World!"
 
-@app.route('/send_sse')
+@app.route('/send_sse', methods=['GET'])
 def send_message():
-    sse.publish({"message": "Hello!"}, type='greeting')
-    print 'message sent'
+    received_args = request.args
+    status = received_args['status']
+    sse.publish({"message": status}, type='greeting')
+    print 'message sent' + status
     return "Message sent!"
 
 @app.route("/sensor_list")
