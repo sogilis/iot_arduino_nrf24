@@ -6,7 +6,7 @@ from flask_sse import sse
 import os
 
 app = Flask(__name__)
-app.config["REDIS_URL"] = "redis://localhost"
+app.config["REDIS_URL"] = os.environ["REDIS_URL"]
 app.register_blueprint(sse, url_prefix='/stream')
 db = Database()
 
