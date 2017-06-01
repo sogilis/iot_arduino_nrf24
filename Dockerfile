@@ -14,5 +14,4 @@ RUN pip install -r requirements.txt
 EXPOSE 80
 
 # Run app.py when the container launches
-CMD ["gunicorn", "main:app", "--worker-class", "gevent", "--bin", "0.0.0.0:80"]
-#CMD ["python", "main.py"]
+CMD ["python", "main.py"]
