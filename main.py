@@ -64,7 +64,7 @@ def get_sensor_data():
                 dates.append(line.date)
                 data.append(line.data)
                 print line.date, line.data
-        return render_template('graph.html', dates=dates, data=data)
+        return render_template('graph.html', dates=dates, data=data, data_type=received_args['type'])
     else:
         return redirect(url_for('sensor_list'))
 
