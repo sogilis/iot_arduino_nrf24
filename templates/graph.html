@@ -14,6 +14,7 @@ var myLineChart = new Chart(ctx, {
       datasets:[{
          label: "Temperature",
          borderColor: "rgba(75,192,192,1)",
+         pointRadius:0,
          fill:false,
          data:data
       }]},
@@ -22,11 +23,11 @@ var myLineChart = new Chart(ctx, {
       scales:{
          xAxes:[{type:'time',
                  time:{
-                    unitStepSize:data.length / 6,
+                    unitStepSize:2,
                     displayFormats:{
-                       day: 'DD/MM HH:mm',
+                       hour: 'DD/MM HH:mm',
                     },
-                    unit :'day'
+                    unit :'hour'
                  }}]
       }
    }
