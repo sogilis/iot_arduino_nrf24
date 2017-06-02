@@ -81,22 +81,17 @@ def get_orders():
                 return json.dumps(res)
             else:
                 return '{}'
-            #return str(next_order.date) + ' # ' + str(next_order.nodeId) + ' # ' + str(next_order.orderType) + '# ' + str(next_order.orderData) + '<br>'
-            #db_result = list(db_result)[0]
         else:
             db_result = select(d for d in OrderData if (d.date >= datetime.now() - timedelta(days=1))).order_by(OrderData.date)[:]
-            dates = []
-            data = []
-            res = ''
+            res = []
             for line in db_result:
-                print line
-                res += str(line.date) + ' # ' + str(line.nodeId) + ' # ' + str(line.orderType) + '# ' + str(line.orderData) + '<br>'
-
-                #print 'one : ' + str(line.date)
-                #print 'two : ' + str(line.date.isoformat())
-                #data.append(line.data)
-                #print line.date, line.data
-        return res#render_template('graph.html', dates=dates, data=data, data_type=received_args['type'])
+                cur = {}
+                cur['date'] = int((line.date - datetime.now()).total_seconds())
+                cur['nodeId'] = line.nodeId
+                cur['orderType'] = line.orderType
+                cur['orderData'] = line.orderData
+                res.append(cur)
+            return json.dumps(res)
 
 @app.route('/post_order', methods=['GET'])
 def post_order():
@@ -104,7 +99,6 @@ def post_order():
     if 'nodeId' in received_args and 'orderType' in received_args and 'orderDate' in received_args and 'orderData' in received_args:
         print int(received_args['nodeId'])
         print received_args['orderType']
-        #print int(received_args['orderDate'])
         print received_args['orderData']
         dateO = datetime.strptime(received_args['orderDate'],'%d/%m/%Y-%H:%M')
         print dateO
